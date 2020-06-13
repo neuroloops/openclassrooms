@@ -4,6 +4,7 @@
   "description": "projet 6 | webdev | openClassrooms",
   "main": "server.js",
   "scripts": {
+    "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

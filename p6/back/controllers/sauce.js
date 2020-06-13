@@ -2,15 +2,15 @@ const Sauce = require('../models/sauce');
 
 exports.createSauce = (req, res) => {
   const sauceObject = JSON.parse(req.body.sauce);
+  console.log(sauceObject);
   const { userId } = sauceObject;
   delete sauceObject.id;
 
   const sauce = new Sauce({
     ...sauceObject,
     userId,
+    likes: 0,
     dislikes: 0,
-    usersliked: '',
-    likes: 1,
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   });
 
@@ -62,8 +62,6 @@ exports.deleteSauce = (req, res) => {
 };
 
 exports.getAllSauce = (req, res) => {
-  console.log(process.env.mongoLogin);
-
   Sauce.find()
     .then((sauces) => {
       res.status(200).json(sauces);
@@ -76,14 +74,40 @@ exports.getAllSauce = (req, res) => {
 exports.like = (req, res) => {
   const sauceObject = req.body;
   console.log(sauceObject);
-  Sauce.updateOne(
-    { _id: req.params.id },
-    {
-      ...sauceObject,
-
-      likes: +1
-    }
-  )
-    .then(() => res.status(200).json({ message: 'Objet modifié !' }))
-    .catch((error) => res.status(400).json({ error }));
+  if (sauceObject.like === 1) {
+    console.log('like = 1');
+    Sauce.updateOne(
+      { _id: req.params.id },
+      {
+        ...sauceObject,
+        likes: 1
+      }
+    )
+      .then(() => res.status(200).json({ message: 'Objet modifié !' }))
+      .catch((error) => res.status(400).json({ error }));
+  } else if (sauceObject.like === 0) {
+    console.log('like = 0');
+    Sauce.updateOne(
+      { _id: req.params.id },
+      {
+        ...sauceObject,
+        likes: 0
+      }
+    )
+      .then(() => res.status(200).json({ message: 'Objet modifié !' }))
+      .catch((error) => res.status(400).json({ error }));
+  } else if (sauceObject.like === -1) {
+    Sauce.updateOne(
+      console.log(sauceObject),
+      { _id: req.params.id },
+      {
+        ...sauceObject,
+        dislikes: -1,
+        usersliked: sauceObject
+        // usersLiked: sauceObject
+      }
+    )
+      .then(() => res.status(200).json({ message: 'Objet modifié !' }))
+      .catch((error) => res.status(400).json({ error }));
+  }
 };
