@@ -72,14 +72,18 @@ exports.getAllSauce = (req, res) => {
 };
 
 exports.like = (req, res) => {
+  console.log(req.params.id);
+
   const sauceObject = req.body;
+  const { userId } = sauceObject;
   console.log(sauceObject);
+
   if (sauceObject.like === 1) {
-    console.log('like = 1');
     Sauce.updateOne(
       { _id: req.params.id },
       {
         ...sauceObject,
+        usersLiked: userId,
         likes: 1
       }
     )
@@ -97,14 +101,13 @@ exports.like = (req, res) => {
       .then(() => res.status(200).json({ message: 'Objet modifié !' }))
       .catch((error) => res.status(400).json({ error }));
   } else if (sauceObject.like === -1) {
+    console.log('like = -1');
+
     Sauce.updateOne(
-      console.log(sauceObject),
       { _id: req.params.id },
       {
         ...sauceObject,
-        dislikes: -1,
-        usersliked: sauceObject
-        // usersLiked: sauceObject
+        dislikes: 1
       }
     )
       .then(() => res.status(200).json({ message: 'Objet modifié !' }))
